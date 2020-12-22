@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Cadena {
     public static Cadena Datos;
-
+    public static final String DEFAULT_INTERVALO = "0.000001";
     public ArrayList<Simbolo> Simbolos;
     public enum STATUS {NS,NUMERO,X,CE,ES,EXPONENTE,SIG}
     private STATUS mStatus = STATUS.NS;
@@ -146,39 +146,55 @@ public class Cadena {
             System.out.print(S.Codificar() + "\t");
         }
     }
+    public static String EjecutarOrden(int orden, String Mensaje)
+    {
+        String RES = "";
+        switch (orden)
+        {
+            case 0:
+                RES = Datos.Integrar(Mensaje);
+                break;
+            case 1:
+                Datos = new Cadena(Mensaje);
+                RES = "0";
+                break;
+            case 2:
+                //TODO : Por implementar
+                RES = "0";
+                break;
 
-    public String EjecutarOrden(int ord,String cad)
+        }
+        return RES;
+    }
+
+    public String Integrar(String intervalos)
     {
         ///Parte en evaluacion ... implementada por ahora
         BigDecimal R = new BigDecimal("0");
-        switch (ord)
+        //Ejecutar cadena cad forma : ini fin inter
+        String[] cadena = intervalos.split(" ");
+        BigDecimal A = new BigDecimal(cadena[0]) ,
+                B = new BigDecimal(cadena[1]),
+                I = null;
+        if (cadena.length > 2)
+            I = new BigDecimal(cadena[2]);
+        else
+            I = new BigDecimal(DEFAULT_INTERVALO);
+        if (A.compareTo(B) > 0)
         {
-            case '0'://Ejecutar cadena cad forma : ini fin inter
-                String[] cadena = cad.split(" ");
-                BigDecimal A = new BigDecimal(cadena[0]) ,
-                        B = new BigDecimal(cadena[1]),
-                        I = new BigDecimal(cadena[2]);
-                if (A.compareTo(B) > 0)
-                {
-                    I = I.negate();
-                }
-                while (A.compareTo(B) <= 0)
-                {
-                    BigDecimal temp = EvaluarTodo(A.add(I)) .add(EvaluarTodo(A)); // A+I + A
-                    //System.out.println("A : " + A.toString() + " Temp : " + temp.toString());
-                    temp = temp.multiply(I);
-                    //System.out.println("temp : " + temp.toString());
-                    //Datos arbitrarios , no se como configurar esto
-                    temp = temp.divide(new BigDecimal("2"),RoundingMode.DOWN);
-                    //System.out.println("temp : " + temp.toString());
-                    R = R.add(temp);
-                    A = A.add(I);
-                }
-                break;
-            case '1':
-                //apagarse
-                break;
-
+            I = I.negate();
+        }
+        while (A.compareTo(B) <= 0)
+        {
+            BigDecimal temp = EvaluarTodo(A.add(I)) .add(EvaluarTodo(A)); // A+I + A
+            //System.out.println("A : " + A.toString() + " Temp : " + temp.toString());
+            temp = temp.multiply(I);
+            //System.out.println("temp : " + temp.toString());
+            //Datos arbitrarios , no se como configurar esto
+            temp = temp.divide(new BigDecimal("2"),RoundingMode.DOWN);
+            //System.out.println("temp : " + temp.toString());
+            R = R.add(temp);
+            A = A.add(I);
         }
 
 
