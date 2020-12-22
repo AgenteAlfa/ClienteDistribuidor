@@ -1,6 +1,8 @@
 package com.distribuido.Conexion;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -27,6 +29,31 @@ public class Coordinador extends ServerSocket {
         //Iniciar hilo comunicador si hay mas de 1 conexion, sino no hacer nada
     }
 
+
+    private class Hilo_Coordinador extends Thread
+    {
+        public Hilo_Coordinador(BigDecimal A, BigDecimal B , BigDecimal I){
+
+        }
+
+        private void Apagar(){Encendido = false; interrupt();}
+        private boolean Encendido = true;
+        @Override
+        public void run() {
+            /*
+            while(Encendido)
+            {
+                try {
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            */
+        }
+
+    }
 
 
     private class Hilo_Esperador extends Thread

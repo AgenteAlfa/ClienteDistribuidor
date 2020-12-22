@@ -2,7 +2,9 @@ package com.distribuido.Cadena;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.math.BigInteger;
+import java.math.BigDecimal;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 public class Cadena {
@@ -26,13 +28,21 @@ public class Cadena {
 
     private void Leer(String S) throws IOException {
         StringReader R = new StringReader(S);
+
         int letra = -1;
-        Simbolo Ultimo;
+        Simbolo Ultimo = null;
         boolean leer = true;
-        while (R.ready())
+        boolean equis = false;
+        while (true)
         {
+            equis = letra == 'x' || letra == 'X';
+            //System.out.println("LETRA : " + + ((char) letra)  + " : " + leer);
             letra = leer? R.read():letra;
-            if (letra == -1) break;
+            if (letra == -1)
+            {
+                if (Ultimo != null )Ultimo.Corregir();
+                break;
+            }
             if (letra == ' ') continue;
             leer = true;
             //System.out.println("STATUS : " + mStatus.toString());
@@ -76,20 +86,26 @@ public class Cadena {
                     break;
 
                 case X:
+                   //System.out.println("Evaluando X");
                     switch (letra)
                     {
+
                         case '+': case '-':
                         case '0': case '1': case '2': case '3':case '4':
                         case '5': case '6': case '7': case'8': case '9':
                             leer = false;
-                            Ultimo.ValExp = new BigInteger("0");
+                            Ultimo.ValExp = new BigDecimal("0");
                         case 'x':
                         case 'X':
+                            Ultimo.equis = true;
                             break;
                     }
                     mStatus = STATUS.values()[mStatus.ordinal() + 1];
+
+                    //System.out.println("FIN X");
                     break;
                 case CE:
+                    //System.out.println("Evaluando CE");
                     switch (letra)
                     {
                         case '+': case '-':
@@ -112,6 +128,7 @@ public class Cadena {
                     break;
             }
         }
+
     }
 
     public String Codificar()
@@ -132,25 +149,69 @@ public class Cadena {
 
     public String EjecutarOrden(int ord,String cad)
     {
-        return "0";
+        ///Parte en evaluacion ... implementada por ahora
+        BigDecimal R = new BigDecimal("0");
+        switch (ord)
+        {
+            case '0'://Ejecutar cadena cad forma : ini fin inter
+                String[] cadena = cad.split(" ");
+                BigDecimal A = new BigDecimal(cadena[0]) ,
+                        B = new BigDecimal(cadena[1]),
+                        I = new BigDecimal(cadena[2]);
+                if (A.compareTo(B) > 0)
+                {
+                    I = I.negate();
+                }
+                while (A.compareTo(B) <= 0)
+                {
+                    BigDecimal temp = EvaluarTodo(A.add(I)) .add(EvaluarTodo(A)); // A+I + A
+                    //System.out.println("A : " + A.toString() + " Temp : " + temp.toString());
+                    temp = temp.multiply(I);
+                    //System.out.println("temp : " + temp.toString());
+                    //Datos arbitrarios , no se como configurar esto
+                    temp = temp.divide(new BigDecimal("2"),RoundingMode.DOWN);
+                    //System.out.println("temp : " + temp.toString());
+                    R = R.add(temp);
+                    A = A.add(I);
+                }
+                break;
+            case '1':
+                //apagarse
+                break;
+
+        }
+
+
+        return R.toString();
+    }
+
+    private BigDecimal EvaluarTodo(BigDecimal X)
+    {
+        BigDecimal R = new BigDecimal("0");
+        for (Simbolo mS: Simbolos) {
+            R = R.add(mS.Evaluar(X));
+        }
+        return R;
     }
 
     private class Simbolo
     {
 
-        public BigInteger ValCoc,ValExp;
+        public BigDecimal ValCoc,ValExp;
         private boolean asig;
+        private boolean equis = false;
         private boolean positivo = true;
         private Simbolo()
         {
-            //ValCoc = new BigInteger("0");
-            //ValExp = new BigInteger("0");
+            //ValCoc = new BigDecimal("0");
+            //ValExp = new BigDecimal("0");
         };
 
         private void Corregir()
         {
-            if (ValCoc == null) ValCoc = new BigInteger("1");
-            if (ValExp == null) ValExp = new BigInteger("1");
+            if (ValCoc == null) ValCoc = new BigDecimal("1");
+
+            if (ValExp == null) ValExp = equis?new BigDecimal("1"):new BigDecimal("0");
         }
         public void setPositivo(boolean positivo) {
             this.positivo = positivo;
@@ -162,8 +223,8 @@ public class Cadena {
             if (mStatus == STATUS.NUMERO)
             {
                 String anterior = ValCoc != null?ValCoc.toString() : "";
-                ValCoc = new BigInteger
-                            ( anterior + (char)c);
+                ValCoc = new BigDecimal(
+                            ( anterior + (char)c) );
                 if (!positivo && ValCoc.signum() == 1) {
                     //System.out.println("Antiguo : " + ValCoc.toString());
                     ValCoc = ValCoc.negate();
@@ -174,12 +235,17 @@ public class Cadena {
             else
             {
                 String anterior = ValExp != null?ValExp.toString() : "";
-                ValExp = new BigInteger
-                        ( anterior + (char)c);
+                ValExp = new BigDecimal(
+                        ( anterior + (char)c) );
                 if (!positivo && ValExp.signum() == 1) ValExp = ValExp.negate();
             }
 
         }
+        public BigDecimal Evaluar(BigDecimal X)
+        {
+            return X.pow(ValExp.toBigInteger().intValue()).multiply(ValCoc);
+        }
+
 
         public String Codificar()
         {

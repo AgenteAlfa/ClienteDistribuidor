@@ -8,7 +8,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        new Cadena("11 - 12x + 13x - 14x^110 + 15x^2 - 16x^-1789 + 17x^-0").Imprimir();
+        Cadena C = new Cadena("3x -4x^2");
+        C.Imprimir();
+        System.out.println("Resultado integrar : " + C.EjecutarOrden('0',"6 12 0.00001"));
 
     }
 }
