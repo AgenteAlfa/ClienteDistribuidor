@@ -6,12 +6,15 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class Cadena {
+    public static Cadena Datos;
+
     public ArrayList<Simbolo> Simbolos;
     public enum STATUS {NS,NUMERO,X,CE,ES,EXPONENTE,SIG}
     private STATUS mStatus = STATUS.NS;
 
     public Cadena(String S)
     {
+        Datos = this;
         Simbolos = new ArrayList<>();
         Simbolos.add(new Simbolo());
         try {
@@ -32,8 +35,8 @@ public class Cadena {
             if (letra == -1) break;
             if (letra == ' ') continue;
             leer = true;
-            System.out.println("STATUS : " + mStatus.toString());
-            System.out.println((char)letra);
+            //System.out.println("STATUS : " + mStatus.toString());
+            //System.out.println((char)letra);
             Ultimo = Simbolos.get(Simbolos.size() - 1);
 
             switch (mStatus)
@@ -127,6 +130,11 @@ public class Cadena {
         }
     }
 
+    public String EjecutarOrden(int ord,String cad)
+    {
+        return "0";
+    }
+
     private class Simbolo
     {
 
@@ -150,7 +158,7 @@ public class Cadena {
         }
         public void addVal(int c)
         {
-            System.out.println("Agregando..." + (char) c);
+            //System.out.println("Agregando..." + (char) c);
             if (mStatus == STATUS.NUMERO)
             {
                 String anterior = ValCoc != null?ValCoc.toString() : "";

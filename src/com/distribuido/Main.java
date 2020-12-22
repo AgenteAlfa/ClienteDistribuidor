@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        new Cadena("11 - 12x + 13x - 14x^0 + 15x^2 - 16x^-1 + 17x^-0").Imprimir();
+        new Cadena("11 - 12x + 13x - 14x^110 + 15x^2 - 16x^-1789 + 17x^-0").Imprimir();
 
     }
 }
