@@ -8,9 +8,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Cadena C = new Cadena("3x -4x^2");
+        Cadena C = new Cadena("2x^2 - x");
         C.Imprimir();
-        System.out.println("Resultado integrar : " + C.EjecutarOrden('0',"6 12 0.00001"));
+        System.out.println(C.Integrar("1 10").toString());;
+        //System.out.println("Resultado integrar : " + C.EjecutarOrden('0',"6 12 0.00001"));
 
     }
 }

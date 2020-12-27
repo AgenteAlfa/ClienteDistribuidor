@@ -1,29 +1,27 @@
 package com.distribuido;
 
-import com.distribuido.Conexion.CentralDistribuidor;
-import com.distribuido.Conexion.Conexion;
-import com.distribuido.Conexion.Coordinador;
+import com.distribuido.Conexion.Configuracion;
+import com.distribuido.Conexion.Distribuidor.DObrero;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class TEST_DISTRIBUIDOR {
 
     public static void main(String[] args) {
 
-        System.out.println("1  s");
-        Conexion C = null;
+        //System.out.println("1  s");
+        DObrero C = null;/*
         try {
             ;
             //System.out.println("aSdasdasd");
-            C = new Conexion(new Socket(Conexion.IP,Conexion.PUERTO));
+            C = new DObrero(new Socket(Configuracion.IP, DObrero.PUERTO));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("2  ss");
+        //System.out.println("2  ss");
         C.Trabajar();
-
+*/
     }
 
 }

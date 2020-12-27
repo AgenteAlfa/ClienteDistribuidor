@@ -1,8 +1,6 @@
 package com.distribuido;
 
-import com.distribuido.Cadena.Cadena;
-import com.distribuido.Conexion.CentralDistribuidor;
-import com.distribuido.Conexion.Coordinador;
+import com.distribuido.Conexion.Coordinador.Coordinador;
 
 import java.io.IOException;
 import java.util.Scanner;
