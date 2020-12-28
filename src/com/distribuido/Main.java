@@ -1,12 +1,14 @@
 package com.distribuido;
 
 import com.distribuido.Cadena.Cadena;
+import com.distribuido.Ventana.Ventana;
 
 import java.math.BigInteger;
 
 public class Main {
 
     public static void main(String[] args) {
+        Ventana V = new Ventana();
 
         Cadena C = new Cadena("2x^2 - x");
         C.Imprimir();
