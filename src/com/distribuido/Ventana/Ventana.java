@@ -4,14 +4,16 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Ventana extends JFrame{
-    int ancho=974;
-    int alto=760;
+    int ancho=655;
+    int alto=530;
+
     FondoPanel fondo = new FondoPanel();
 
     public Ventana(){
         setSize(ancho, alto);
-        int PY1=515;
-        int PY2=580;
+        int PY1=340;
+        int PY2=380;
+        int tamanoLetraJL=25;
 
         this.setContentPane(fondo);
         fondo.setLayout(null);
@@ -19,76 +21,79 @@ public class Ventana extends JFrame{
         //Label A
         JLabel A = new JLabel();
         A.setText("a:");
-        A.setBounds(50,PY1,55,55);
-        A.setFont(new Font("Arial",Font.BOLD,50));
+        A.setBounds(20,PY1,55,30);
+        A.setFont(new Font("Arial",Font.BOLD,tamanoLetraJL));
         add(A);
         //JTextFieldA
         JTextField JTextFieldA = new JTextField();
         JTextFieldA.setText("0");
-        JTextFieldA.setBounds(100,PY1,70,55);
-        JTextFieldA.setFont(new Font("Arial",Font.BOLD,35));
+        JTextFieldA.setBounds(48,PY1,70,30);
+        JTextFieldA.setFont(new Font("Arial",Font.BOLD,20));
         add(JTextFieldA);
 
         //Label B
         JLabel B = new JLabel();
         B.setText(", b:");
-        B.setBounds(180,PY1,80,55);
-        B.setFont(new Font("Arial",Font.BOLD,50));
+        B.setBounds(119,PY1,80,30);
+        B.setFont(new Font("Arial",Font.BOLD,tamanoLetraJL));
         add(B);
         //JTextFieldB
         JTextField JTextFieldB = new JTextField();
         JTextFieldB.setText("10");
-        JTextFieldB.setBounds(260,PY1,70,55);
-        JTextFieldB.setFont(new Font("Arial",Font.BOLD,35));
+        JTextFieldB.setBounds(159,PY1,70,30);
+        JTextFieldB.setFont(new Font("Arial",Font.BOLD,20));
         add(JTextFieldB);
 
         //Label FX
         JLabel FX = new JLabel();
         FX.setText(", f(x):");
-        FX.setBounds(330,PY1,140,55);
-        FX.setFont(new Font("Arial",Font.BOLD,50));
+        FX.setBounds(229,PY1,140,30);
+        FX.setFont(new Font("Arial",Font.BOLD,tamanoLetraJL));
         add(FX);
         //JTextFieldFX
         JTextField JTextFieldFX = new JTextField();
         JTextFieldFX.setText("10");
-        JTextFieldFX.setBounds(460,PY1,250,55);
-        JTextFieldFX.setFont(new Font("Arial",Font.BOLD,35));
+        JTextFieldFX.setBounds(295,PY1,210,30);
+        JTextFieldFX.setFont(new Font("Arial",Font.BOLD,20));
         add(JTextFieldFX);
 
         //Label N
         JLabel N = new JLabel();
         N.setText(", n:");
-        N.setBounds(710,PY1,80,55);
-        N.setFont(new Font("Arial",Font.BOLD,50));
+        N.setBounds(505,PY1,80,30);
+        N.setFont(new Font("Arial",Font.BOLD,tamanoLetraJL));
         add(N);
         //JTextFieldN
         JTextField JTextFieldN = new JTextField();
         JTextFieldN.setText("10");
-        JTextFieldN.setBounds(790,PY1,120,55);
-        JTextFieldN.setFont(new Font("Arial",Font.BOLD,35));
+        JTextFieldN.setBounds(547,PY1,70,30);
+        JTextFieldN.setFont(new Font("Arial",Font.BOLD,20));
         add(JTextFieldN);
 
         //Boton calcular
         JButton BCalcular = new JButton();
         BCalcular.setText("Calcular");
-        BCalcular.setBounds(400,PY2,150,45);
-        BCalcular.setFont(new Font("Arial",Font.BOLD,25));
+        BCalcular.setBounds(250,PY2,150,30);
+        BCalcular.setFont(new Font("Arial",Font.BOLD,20));
         BCalcular.setMnemonic('c');//tecla para hacerlo funcionar ALT+c
         add(BCalcular);
+        //BCalcular.addActionListener(this);
 
         //ProgressBar
         JProgressBar BProgreso = new JProgressBar();
-        BProgreso.setBounds(300,640,350,5);
+        BProgreso.setBounds(150,420,350,5);
         add(BProgreso);
 
         //Label R
         JLabel R = new JLabel();
         R.setText("Resultado:");
-        R.setBounds(310,650,300,55);
-        R.setFont(new Font("Arial",Font.BOLD,25));
+        R.setBounds(200,440,300,30);
+        R.setFont(new Font("Arial",Font.BOLD,20));
         add(R);
 
         setVisible(true);
+
+
 
     }
 
