@@ -1,6 +1,7 @@
 package com.distribuido.Conexion.Coordinador;
 
 import com.distribuido.Conexion.Configuracion;
+import com.distribuido.Ventana.Ventana;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ import java.util.Date;
 
 public class Coordinador extends ServerSocket {
 
-    public  final int NUM_INTERVALO = 20;
+    public static final int NUM_INTERVALO = 20;
     public Coordinador Intancia;
     private final BigDecimal[] Intervalos;
     private long tiempo;
@@ -30,16 +31,16 @@ public class Coordinador extends ServerSocket {
     private BigDecimal Respuesta;
     private final ArrayList<CDistribuidor> Distribuidores;
     private Hilo_Esperador HE ;
+    private Ventana mVentana;
 
 
-
-    public Coordinador() throws IOException {
+    public Coordinador(Ventana ventana) throws IOException {
         super(Configuracion.PUERTO_PRIMARIO);
         setSoTimeout(100);
         Distribuidores = new ArrayList<>();
         Intervalos = new BigDecimal[NUM_INTERVALO + 1];
         Intancia = this;
-
+        mVentana = ventana;
     }
     public void Esperar()
     {
@@ -98,8 +99,10 @@ public class Coordinador extends ServerSocket {
         //System.out.println("Ya va : " + Respuesta.toString() + " -> " + NUM_INTERVALO);
         Respuesta = Respuesta.add(entrada);
         IESIMA_RESPUESTA++;
+        mVentana.AumentarProgreso();
         if(IESIMA_RESPUESTA == NUM_INTERVALO)
-            System.out.println("RESPUESTA FINAL : " + getRespuesta().toString() + " en " + (new Date().getTime() - tiempo) + " ms");
+            mVentana.SetRespuesta(getRespuesta().toString() + " en " + (new Date().getTime() - tiempo) + " ms");
+            //System.out.println("RESPUESTA FINAL : " + getRespuesta().toString() + );
     }
 
     private class Hilo_Esperador extends Thread
@@ -117,7 +120,7 @@ public class Coordinador extends ServerSocket {
                 //System.out.println("Coordinador -> Estoy esperando distribuidores");
                 try {
                     Distribuidores.add(new CDistribuidor(accept(),Intancia));
-                    //System.out.println("Coordinador -> Tengo " + Distribuidores.size() + " Distribuidores");
+                    System.out.println("A ingresado un nuevo Distribuidor");
                 } catch (IOException e) {
                    // e.printStackTrace();
                 }

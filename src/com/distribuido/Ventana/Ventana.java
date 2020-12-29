@@ -1,11 +1,13 @@
 package com.distribuido.Ventana;
 
 import com.distribuido.Cadena.Cadena;
+import com.distribuido.Conexion.Coordinador.Coordinador;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class Ventana extends JFrame{
     int ancho=655;
@@ -25,8 +27,15 @@ public class Ventana extends JFrame{
     JProgressBar BProgreso = new JProgressBar();
     JLabel R = new JLabel();
 
+    Coordinador mCoordinador;
 
     public Ventana(){
+        try {
+            mCoordinador = new Coordinador(this);
+            mCoordinador.Esperar();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
         setSize(ancho, alto);
         this.setContentPane(fondo);
         fondo.setLayout(null);
@@ -49,13 +58,11 @@ public class Ventana extends JFrame{
                 double a= Double.parseDouble(JTextFieldA.getText());
                 double b= Double.parseDouble(JTextFieldB.getText());
                 String fx=JTextFieldFX.getText();
-                BProgreso.setValue(20);
-
+                String mIntervalo = a+" "+b;
                 //Inicia el calculo
-                Cadena Cad = new Cadena(fx);
-                Cad.Imprimir();
-                BProgreso.setValue(100);
-                R.setText("Resultado: "+Cad.Integrar(a+" "+b).toString());
+
+                mCoordinador.Empezar(fx,mIntervalo);
+                //R.setText("Resultado: "+Cad.Integrar(a+" "+b).toString());
                 //------------------------------------
             }
         };
@@ -63,6 +70,16 @@ public class Ventana extends JFrame{
         BCalcular.addActionListener(calcula);
 
     }
+
+    public void SetRespuesta(String S)
+    {
+        R.setText("Resultado: " + S);
+    }
+    public void AumentarProgreso()
+    {
+        BProgreso.setValue(BProgreso.getValue() +  100/Coordinador.NUM_INTERVALO);
+    }
+
 
     public static void main (String args[]){
         java.awt.EventQueue.invokeLater(new Runnable() {
