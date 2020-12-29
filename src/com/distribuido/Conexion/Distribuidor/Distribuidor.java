@@ -18,8 +18,8 @@ public class Distribuidor extends AbsComunicacion implements Runnable{
     private ServerSocket SSocket;
     private ArrayList<DObrero> Obreros;
 
-    public  final int NUM_INTERVALO = 30;
-    public static Coordinador Intancia;
+    public  final int NUM_INTERVALO = 20;
+    public Coordinador Intancia;
     private  BigDecimal[] Intervalos;
 
     private Distribuidor ESTE;
@@ -40,7 +40,8 @@ public class Distribuidor extends AbsComunicacion implements Runnable{
         ESTE = this;
         try {
             SSocket = new ServerSocket(Configuracion.PUERTO_SECUNDARIO);
-            SSocket.setSoTimeout(100);
+            System.out.println("Soy distribuidor en el puerto " + Configuracion.PUERTO_SECUNDARIO);
+            SSocket.setSoTimeout(5000);
             Obreros = new ArrayList<>();
             Intervalos = new BigDecimal[NUM_INTERVALO + 1];
 
@@ -64,14 +65,15 @@ public class Distribuidor extends AbsComunicacion implements Runnable{
         //System.out.println("Ya va : " + Respuesta.toString() + " -> " + NUM_INTERVALO);
         Respuesta = Respuesta.add(entrada);
         IESIMA_RESPUESTA++;
-        if(IESIMA_RESPUESTA == NUM_INTERVALO)
-            System.out.println("RESPUESTA FINAL de distribuidor: " + Respuesta.toString());
+        //if(IESIMA_RESPUESTA == NUM_INTERVALO)
+           // System.out.println("RESPUESTA FINAL de distribuidor: " + Respuesta.toString());
     }
 
 
     public void Iniciar()
     {
         HE.Apagar();
+        System.out.println("Este distribuidor tiene : "+ Obreros.size() + " obreros");
         Hilo_CenDis = new Thread(this);
         Hilo_CenDis.start();
     }
@@ -87,15 +89,15 @@ public class Distribuidor extends AbsComunicacion implements Runnable{
         public void run() {
             while(Encendido)
             {
-                //System.out.println("Coordinador -> Estoy esperando distribuidores");
+                System.out.println("Coordinador -> Estoy esperando distribuidores");
                 try {
                     Obreros.add(new DObrero(SSocket.accept() , ESTE));
-                    //System.out.println("Coordinador -> Tengo " + Distribuidores.size() + " Distribuidores");
+                    System.out.println("Coordinador -> Tengo " + Obreros.size() + " OBreros");
                 } catch (IOException e) {
                     // e.printStackTrace();
                 }
             }
-            //System.out.println("Yo ya termine -> ESPERADOR de distribuidor");
+            System.out.println("Yo ya termine -> ESPERADOR de distribuidor");
         }
     }
 
@@ -114,8 +116,10 @@ public class Distribuidor extends AbsComunicacion implements Runnable{
 
             BigDecimal delta = Intervalos[NUM_INTERVALO].subtract(Intervalos[0])
                     .divide(new BigDecimal(NUM_INTERVALO),Configuracion.ESCALA, RoundingMode.DOWN);
-            System.out.println(Hilo_CenDis.getName() + " - delta : " + delta.toString());
-            for (int i = 1; i < NUM_INTERVALO; i++) {
+            //System.out.println(Hilo_CenDis.getName() + " - delta : " + delta.toString());
+
+
+            for (int i = 1; i <= NUM_INTERVALO - 1 ; i++) {
                 Intervalos[i] = Intervalos[i - 1].add(delta);
                 //System.out.println(Intervalos[i].toString());
             }
@@ -140,6 +144,9 @@ public class Distribuidor extends AbsComunicacion implements Runnable{
             if(Orden == 2)
             {
                 System.out.println("Trabajo terminado");
+                for (DObrero dob: Obreros) {
+                    dob.Ordenar(2,"");
+                }
                 break;
             }
             else

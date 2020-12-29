@@ -12,12 +12,14 @@ import java.util.Date;
 
 public class Coordinador extends ServerSocket {
 
-    public  final int NUM_INTERVALO = 1;
-    public static Coordinador Intancia;
+    public  final int NUM_INTERVALO = 20;
+    public Coordinador Intancia;
     private final BigDecimal[] Intervalos;
     private long tiempo;
+    private Coordinador ESTE;
 
 
+//10.33954199040433515858122508
 
     public BigDecimal getRespuesta() {
         return Respuesta;
@@ -34,7 +36,6 @@ public class Coordinador extends ServerSocket {
     public Coordinador() throws IOException {
         super(Configuracion.PUERTO_PRIMARIO);
         setSoTimeout(100);
-        Respuesta = new BigDecimal(0);
         Distribuidores = new ArrayList<>();
         Intervalos = new BigDecimal[NUM_INTERVALO + 1];
         Intancia = this;
@@ -52,24 +53,25 @@ public class Coordinador extends ServerSocket {
         //Iniciar hilo comunicador si hay mas de 1 conexion, sino no hacer nada
         if (Distribuidores.size() > 0)
         {
+
+            Respuesta = new BigDecimal(0);
+            Intervalos[0] = new BigDecimal(S_intervalo.split(" ")[0]);
+            Intervalos[NUM_INTERVALO] = new BigDecimal(S_intervalo.split(" ")[1]);
+            BigDecimal delta = Intervalos[NUM_INTERVALO].subtract(Intervalos[0])
+                    .divide(new BigDecimal(NUM_INTERVALO),Configuracion.ESCALA,RoundingMode.DOWN);
+            //System.out.println("delta : " + delta.toString());
+
+            for (int i = 1; i <= NUM_INTERVALO - 1; i++) {
+                Intervalos[i] = Intervalos[i - 1].add(delta);
+            }
             //Envia la cadena a todos los Distribuidores
             for (CDistribuidor distribuidor : Distribuidores) {
                 distribuidor.Ordenar(0, S_cadena);
             }
-            //Envia el intervalo a los Distribuidores...
-                //Pone el punto final y inicial y rellena puntos medios
-            Intervalos[0] = new BigDecimal(S_intervalo.split(" ")[0]);
-            Intervalos[NUM_INTERVALO] = new BigDecimal(S_intervalo.split(" ")[1]);
 
-            BigDecimal delta = Intervalos[NUM_INTERVALO].subtract(Intervalos[0])
-                    .divide(new BigDecimal(NUM_INTERVALO),Configuracion.ESCALA,RoundingMode.DOWN);
-            System.out.println("delta : " + delta.toString());
-            for (int i = 1; i < NUM_INTERVALO; i++) {
-                Intervalos[i] = Intervalos[i - 1].add(delta);
-                //System.out.println(Intervalos[i].toString());
-            }
             IESIMO_INTERVALO = 0;
             IESIMA_RESPUESTA = 0;
+
             for (CDistribuidor distribuidor : Distribuidores) {
                 distribuidor.Iniciar();
             }
@@ -82,11 +84,13 @@ public class Coordinador extends ServerSocket {
 
     public synchronized String getINTERVALO() {
         String res = null;
+
         if ( IESIMO_INTERVALO < NUM_INTERVALO)
         {
             res = Intervalos[IESIMO_INTERVALO].toString() + " " + Intervalos[IESIMO_INTERVALO + 1];
             IESIMO_INTERVALO++;
         }
+        //System.out.println("Coordinador : Se a tomado un intervalo ... que es " + res);
         return res;
     }
 
@@ -95,7 +99,7 @@ public class Coordinador extends ServerSocket {
         Respuesta = Respuesta.add(entrada);
         IESIMA_RESPUESTA++;
         if(IESIMA_RESPUESTA == NUM_INTERVALO)
-            System.out.println("RESPUESTA FINAL : " + Coordinador.Intancia.getRespuesta().toString() + " en " + (new Date().getTime() - tiempo) + " ms");
+            System.out.println("RESPUESTA FINAL : " + getRespuesta().toString() + " en " + (new Date().getTime() - tiempo) + " ms");
     }
 
     private class Hilo_Esperador extends Thread
@@ -112,7 +116,7 @@ public class Coordinador extends ServerSocket {
             {
                 //System.out.println("Coordinador -> Estoy esperando distribuidores");
                 try {
-                    Distribuidores.add(new CDistribuidor(accept()));
+                    Distribuidores.add(new CDistribuidor(accept(),Intancia));
                     //System.out.println("Coordinador -> Tengo " + Distribuidores.size() + " Distribuidores");
                 } catch (IOException e) {
                    // e.printStackTrace();

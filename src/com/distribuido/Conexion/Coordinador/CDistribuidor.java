@@ -8,9 +8,11 @@ import java.net.Socket;
 public class CDistribuidor extends AbsComunicacion implements Runnable {
 
     private Thread Hilo;
+    private Coordinador Padre;
 
-    public CDistribuidor(Socket socket) {
+    public CDistribuidor(Socket socket,Coordinador P) {
         super(socket);
+        Padre = P;
     }
 
     public void Iniciar() {
@@ -21,13 +23,14 @@ public class CDistribuidor extends AbsComunicacion implements Runnable {
     @Override
     public void run() {
         String string;
-        while (( string = Coordinador.Intancia.getINTERVALO() )!= null)
+        while (( string = Padre.getINTERVALO() )!= null)
         {
             //System.out.println(Hilo.getName() + " : hace " + string);
             Ordenar(1,string);
-            Coordinador.Intancia.addRes(new BigDecimal(Escuchar()));
+            Padre.Intancia.addRes(new BigDecimal(Escuchar()));
         }
-        Ordenar(2,"");
+        //System.out.println("Estoy tomando un ORDEN 2");
+        Ordenar(2," ");
 
     }
 }

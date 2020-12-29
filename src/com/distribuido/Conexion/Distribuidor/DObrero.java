@@ -34,7 +34,7 @@ public class DObrero extends AbsComunicacion implements Runnable{
             mDistribuidor.addRes(new BigDecimal(Escuchar()));
             //mDistribuidor.addRes(new BigDecimal("0.01"));
         }
-        Ordenar(2,"");
+        //Ordenar(2,"");
 
     }
 }

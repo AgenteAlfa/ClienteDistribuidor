@@ -52,7 +52,7 @@ public class Obrero extends AbsComunicacion implements Runnable{
                 //Responder("0");
             }
 
-            //System.out.println("Obrero -> Termine de trabajar...");
+            System.out.println("Obrero -> Termine de trabajar...");
 
         }catch (Exception E)
         {
