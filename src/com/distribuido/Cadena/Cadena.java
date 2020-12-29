@@ -240,7 +240,7 @@ public class Cadena {
             I = I.negate();
         }
         //System.out.println(" Integro en " + A.toString() + " a " + B.toString() + " de " + I.toString());
-        while (A.compareTo(B) <= 0)
+        while (A.compareTo(B) < 0)
         {
             //System.out.println("Agregando...");
             BigDecimal delta = EvaluarTodo(A);
